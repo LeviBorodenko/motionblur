@@ -1,6 +1,6 @@
 # MotionBlur
 
-Generate authentic motion blur kernels(point spread functions) and apply them to images en masse.
+Generate authentic motion blur kernels (point spread functions) and apply them to images en masse.
 
 Very efficient thanks to numpy's FFT based convolution and the optimised procedural generation of kernels. Intuitive API.
 

@@ -133,9 +133,9 @@ class Kernel(object):
 
             Hence we sample
 
-            MAX_PATH_LEN =[U(0,1) + U(0, intensity)] * diagonal
+            MAX_PATH_LEN =[U(0,1) + U(0, intensity^2)] * diagonal * 0.75
 
-            and each step: beta(1, 7) * (1 - self.INTENSITY + eps) * diagonal)
+            and each step: beta(1, 30) * (1 - self.INTENSITY + eps) * diagonal)
             """
 
             # getting max length of blur motion
@@ -162,9 +162,9 @@ class Kernel(object):
             [description]
             The maximal angle should be larger the more
             intense the motion is. So we sample it from a
-            U(0, intensity * pi / 4)
+            U(0, intensity * pi)
 
-            We sample "jitter" from a beta(2,5) which is the probability
+            We sample "jitter" from a beta(2,20) which is the probability
             that the next angle has a different sign than the previous one.
             """
 
@@ -318,7 +318,7 @@ class Kernel(object):
 
     @kernelMatrix.setter
     def kernelMatrix(self, *kargs):
-        raise NotImplementedError("Can't manually set kernel matrix")
+        raise NotImplementedError("Can't manually set kernel matrix yet")
 
     def applyTo(self, image) -> Image:
         """[summary]
@@ -340,10 +340,10 @@ class Kernel(object):
 
         def applyToPIL(image: Image) -> Image:
             """[summary]
-            Applies the kernel to the image object
+            Applies the kernel to an PIL.Image instance
             [description]
             converts to RGB and applies the kernel to each
-            band before recombining it.
+            band before recombining them.
             Arguments:
                 image {Image} -- Image to convolve
 
