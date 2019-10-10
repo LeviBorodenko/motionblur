@@ -205,7 +205,7 @@ class Kernel(object):
         ####
 
         # we turn angles and steps into complex numbers
-        complex_increments = polar2z(kernel.STEPS, kernel.ANGLES)
+        complex_increments = polar2z(self.STEPS, self.ANGLES)
 
         # generate path as the cumsum of these increments
         self.path_complex = np.cumsum(complex_increments)
@@ -379,7 +379,7 @@ class Kernel(object):
 
             return applyToPIL(image)
 
-        elif isinstance(image, Image):
+        elif isinstance(image, Image.Image):
 
             # apply kernel
             return applyToPIL(image)
