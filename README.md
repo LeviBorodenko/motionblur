@@ -41,6 +41,10 @@ blurred1 = kernel.applyTo(image1_path)
 
 blurred2 = kernel.applyTo(image2)
 
+# if you need the dimension of the blurred image to be the same
+# as the original image, pass `keep_image_dim=True`
+blurred_same = kernel.applyTo(image2, keep_image_dim=True)
+
 # show result
 blurred1.show()
 
