@@ -86,7 +86,7 @@ class Kernel(object):
             raise ValueError("Size must be tuple of 2 POSITIVE integers")
 
         # check if intensity is float (int) between 0 and 1
-        if type(intensity) not in [int, float]:
+        if type(intensity) not in [int, float, np.float32, np.float64]:
             raise ValueError("Intensity must be a number between 0 and 1")
         elif intensity < 0 or intensity > 1:
             raise ValueError("Intensity must be a number between 0 and 1")
@@ -320,7 +320,7 @@ class Kernel(object):
     def kernelMatrix(self, *kargs):
         raise NotImplementedError("Can't manually set kernel matrix yet")
 
-    def applyTo(self, image) -> Image:
+    def applyTo(self, image, keep_image_dim: bool = False) -> Image:
         """[summary]
         Applies kernel to one of the following:
 
@@ -331,6 +331,10 @@ class Kernel(object):
 
         Arguments:
             image {[str, Path, Image, np.ndarray]}
+            keep_image_dim {bool} -- If true, then we will
+                    conserve the image dimension after blurring
+                    by using "same" convolution instead of "valid"
+                    convolution inside the scipy convolve function.
 
         Returns:
             Image -- [description]
@@ -338,7 +342,7 @@ class Kernel(object):
         # calculate kernel if haven't already
         self._createKernel()
 
-        def applyToPIL(image: Image) -> Image:
+        def applyToPIL(image: Image, keep_image_dim: bool = False) -> Image:
             """[summary]
             Applies the kernel to an PIL.Image instance
             [description]
@@ -346,6 +350,10 @@ class Kernel(object):
             band before recombining them.
             Arguments:
                 image {Image} -- Image to convolve
+                keep_image_dim {bool} -- If true, then we will
+                    conserve the image dimension after blurring
+                    by using "same" convolution instead of "valid"
+                    convolution inside the scipy convolve function.
 
             Returns:
                 Image -- blurred image
@@ -353,13 +361,17 @@ class Kernel(object):
             # convert to RGB
             image = image.convert(mode="RGB")
 
+            conv_mode = "valid"
+            if keep_image_dim:
+                conv_mode = "same"
+
             result_bands = ()
 
             for band in image.split():
 
                 # convolve each band individually with kernel
                 result_band = convolve(
-                    band, self.kernelMatrix, mode="valid").astype("uint8")
+                    band, self.kernelMatrix, mode=conv_mode).astype("uint8")
 
                 # collect bands
                 result_bands += result_band,
@@ -377,12 +389,12 @@ class Kernel(object):
             image_path = Path(image)
             image = Image.open(image_path)
 
-            return applyToPIL(image)
+            return applyToPIL(image, keep_image_dim)
 
         elif isinstance(image, Image.Image):
 
             # apply kernel
-            return applyToPIL(image)
+            return applyToPIL(image, keep_image_dim)
 
         elif isinstance(image, np.ndarray):
 
@@ -392,8 +404,16 @@ class Kernel(object):
             # initiate Image object from array
             image = Image.fromarray(image)
 
-            return applyToPIL(image)
+            return applyToPIL(image, keep_image_dim)
 
         else:
 
             raise ValueError("Cannot apply kernel to this type.")
+
+
+if __name__ == '__main__':
+    image = Image.open("./images/moon.png")
+    image.show()
+    k = Kernel()
+
+    k.applyTo(image, keep_image_dim=True).show()
