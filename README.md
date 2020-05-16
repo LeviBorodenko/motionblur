@@ -12,8 +12,8 @@ Here is how:
 
 Initialise a `Kernel` instance with the parameters `size` (size of kernel matrix in pixels - as a tuple of integers) and `intensity`.
 
-Intensity determines how non - linear and shaken the motion blur is. It must have a value between 0 and 1.
-Zero is a linear motion and 1 a highly non - linear and often self intersecting motion.
+Intensity determines how non-linear and shaken the motion blur is. It must have a value between 0 and 1.
+Zero is a linear motion and 1 a highly non-linear and often self intersecting motion.
 
 ![Effect of intensity](./intensity.png)
 
